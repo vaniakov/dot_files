@@ -1,250 +1,193 @@
-set nocompatible              " be iMproved, required
+" Use Vim settings, rather than Vi settings (much better!).
+" This must be first, because it changes other options as a side effect.
+
+set nocompatible              " required
 filetype off                  " required
 
-"=====================================================
-" Vundle settings
-"=====================================================
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
-Plugin 'gmarik/Vundle.vim'		" let Vundle manage Vundle, required
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
 
-"---------=== Code/project navigation ===-------------
-Plugin 'scrooloose/nerdtree' 	    	" Project and file navigation
-Plugin 'majutsushi/tagbar'          	" Class/module browser
+" let Vundle manage Vundle, required
+Plugin 'gmarik/Vundle.vim'
 
-"------------------=== Other ===----------------------
-Plugin 'bling/vim-airline'   	    	" Lean & mean status/tabline for vim
-Plugin 'vim-airline/vim-airline-themes'
+" Add all your plugins here (note older versions of Vundle used Bundle instead of Plugin)
 
-Plugin 'fisadev/FixedTaskList.vim'  	" Pending tasks list
-"Plugin 'rosenfeld/conque-term'      	" Consoles as buffers
-Plugin 'tpope/vim-surround'	   	" Parentheses, brackets, quotes, XML tags, and more
+Plugin 'scrooloose/syntastic'
+Plugin 'nvie/vim-flake8'
+Plugin 'altercation/vim-colors-solarized'
 
-"--------------=== Snippets support ===---------------
-Plugin 'garbas/vim-snipmate'		" Snippets manager
-Plugin 'MarcWeber/vim-addon-mw-utils'	" dependencies #1
-Plugin 'tomtom/tlib_vim'		" dependencies #2
-Plugin 'honza/vim-snippets'		" snippets repo
 
-"---------------=== Languages support ===-------------
-" --- Python ---
-Plugin 'klen/python-mode'	        " Python mode (docs, refactor, lints, highlighting, run and ipdb and more)
-Plugin 'davidhalter/jedi-vim' 		" Jedi-vim autocomplete plugin
-Plugin 'mitsuhiko/vim-jinja'		" Jinja support for vim
-Plugin 'mitsuhiko/vim-python-combined'  " Combined Python 2/3 for Vim
+set background=dark
+let g:solarized_termcolors=256
+colorscheme solarized
 
-call vundle#end()            		" required
-filetype on
-filetype plugin on
-filetype plugin indent on
-
-"=====================================================
-" General settings
-"=====================================================
-set backspace=indent,eol,start
-aunmenu Help.
-aunmenu Window.
-"let no_buffers_menu=1
-set mousemodel=popup
-
-set ruler
-set completeopt-=preview
-set gcr=a:blinkon0
-if has("gui_running")
-  set cursorline
-endif
-set ttyfast
-
-" включить подсветку кода
-syntax on
-if has("gui_running")
-" GUI? устаналиваем тему и размер окна
-  set lines=50 columns=125
- " colorscheme molokai
-" раскомментируйте эти строки, если хотите, чтобы NERDTree/TagBar автоматически отображались при запуске vim
-" autocmd vimenter * TagbarToggle
-" autocmd vimenter * NERDTree
-autocmd vimenter * if !argc() | NERDTree | endif
-
-" на маке vim?
-if has("mac")
-  set guifont=Consolas:h13
-  set fuoptions=maxvert,maxhorz
+function! ToggleBackground()
+    if (w:solarized_style=="dark")
+    let w:solarized_style="light"
+    colorscheme solarized
 else
-" дефолтный GUI
-  set guifont=Ubuntu\ Mono\ derivative\ Powerline\ 10
+    let w:solarized_style="dark"
+    colorscheme solarized
 endif
-else
-" терминал?
-  colorscheme myterm
-endif
+endfunction
+command! Togbg call ToggleBackground()
+nnoremap <F5> :call ToggleBackground()<CR>
+inoremap <F5> <ESC>:call ToggleBackground()<CR>a
+vnoremap <F5> <ESC>:call ToggleBackground()<CR>
 
-tab sball
-set switchbuf=useopen
+"call togglebg#map("<F5>")
 
-" отключаем пищалку и мигание
-set visualbell t_vb= 
-set novisualbell       
+Plugin 'scrooloose/nerdtree'
+Plugin 'jistr/vim-nerdtree-tabs'
 
-set enc=utf-8	     " utf-8 по дефолту в файлах
-set ls=2             " всегда показываем статусбар
-set incsearch	     " инкреминтируемый поиск
-set hlsearch	     " подсветка результатов поиска
-set nu	             " показывать номера строк
-set scrolloff=5	     " 5 строк при скролле за раз
+map <C-n> :NERDTreeToggle<CR>
 
-" отключаем бэкапы и своп-файлы
-"set nobackup 	     " no backup files
-"set nowritebackup    " only in case you don't want a backup file while editing
-"set noswapfile 	     " no swap files
+let NERDTreeIgnore=['\.pyc$', '\~$'] "ignore files in NERDTree
+" open a NERDTree automatically when vim starts up if no files were specified
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 
-" прячем панельки
-"set guioptions-=m   " меню
-set guioptions-=T    " тулбар
-"set guioptions-=r   "  скроллбары
+" open NERDTree automatically when vim starts up on opening a directory
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
 
-" настройка на Tab
-set smarttab
-set tabstop=8
+" I close vim if the only window left open is a NERDTree
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
-"  при переходе за границу в 80 символов в Ruby/Python/js/C/C++ подсвечиваем на темном фоне текст
-augroup vimrc_autocmds
-    autocmd!
-    autocmd FileType ruby,python,javascript,c,cpp highlight Excess ctermbg=DarkGrey guibg=Black
-    autocmd FileType ruby,python,javascript,c,cpp match Excess /\%80v.*/
-    autocmd FileType ruby,python,javascript,c,cpp set nowrap
-augroup END
+Plugin 'kien/ctrlp.vim'
 
-" указываем каталог с настройками SnipMate
-let g:snippets_dir = "~/.vim/vim-snippets/snippets"
+Plugin 'tpope/vim-fugitive'
 
-" настройки Vim-Airline
-set laststatus=2
-let g:airline_theme='badwolf'
+Plugin 'vim-airline/vim-airline'
 let g:airline_powerline_fonts = 1
-let g:airline#extensions#tabline#formatter = 'unique_tail'
-let g:airline#extensions#tabline#enabled = 1
 
-" TagBar настройки
-map <F4> :TagbarToggle<CR>
-let g:tagbar_autofocus = 0 " автофокус на Tagbar при открытии
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
 
-" NerdTree настройки
-" показать NERDTree на F3
-map <F3> :NERDTreeToggle<CR>
-"игноррируемые файлы с расширениями
-let NERDTreeIgnore=['\~$', '\.pyc$', '\.pyo$', '\.class$', 'pip-log\.txt$', '\.o$']  
-" close vim if only opened window is NerdTree
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | end
+" make buffer appear at right while using vsp <file_name>
+set splitright
+set splitbelow
 
-" TaskList настройки
-map <F2> :TaskList<CR> 	   " отобразить список тасков на F2
+"split navigations
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
 
-" Работа буфферами
-map <C-q> :bd<CR> 	   " CTRL+Q - закрыть текущий буффер
-" Switch buffers with Shift+Tab and Ctrl+Shift+Tab
-map <C-Tab> :bnext<CR>
-map <C-S-Tab> :bprevious<CR>
-"=====================================================
-" Python-mode settings
-"=====================================================
-" отключаем автокомплит по коду (у нас вместо него используется jedi-vim)
-let g:pymode_rope = 0
-let g:pymode_rope_completion = 0
-let g:pymode_rope_complete_on_dot = 0
+" Enable folding
+set foldmethod=indent
+set foldlevel=99
 
-" документация
-let g:pymode_doc = 0
-let g:pymode_doc_key = 'K'
-" проверка кода
-let g:pymode_lint = 1
-let g:pymode_lint_checker = "pyflakes,pep8"
-let g:pymode_lint_ignore="E501,W601,C0110"
-" провека кода после сохранения
-let g:pymode_lint_write = 1
-
-" поддержка virtualenv
-let g:pymode_virtualenv = 1
-
-" установка breakpoints
-let g:pymode_breakpoint = 1
-let g:pymode_breakpoint_key = '<leader>b'
-
-" подстветка синтаксиса
-let g:pymode_syntax = 1
-let g:pymode_syntax_all = 1
-let g:pymode_syntax_indent_errors = g:pymode_syntax_all
-let g:pymode_syntax_space_errors = g:pymode_syntax_all
-
-" отключить autofold по коду
-let g:pymode_folding = 0
-
-" возможность запускать код
-let g:pymode_run = 0
-
-" Disable choose first function/method at autocomplete
-let g:jedi#popup_select_first = 0
+" Enable folding with the spacebar
+nnoremap <space> za
 
 
-"=====================================================
-" User hotkeys
-"=====================================================
-" ConqueTerm
-" запуск интерпретатора на F5
-nnoremap <F5> :ConqueTermSplit ipython<CR>
-" а debug-mode на <F6>
-nnoremap <F6> :exe "ConqueTermSplit ipython " . expand("%")<CR>
-let g:ConqueTerm_StartMessages = 0
-let g:ConqueTerm_CloseOnEnd = 0
-" проверка кода в соответствии с PEP8 через <leader>8
-autocmd FileType python map <buffer> <leader>8 :PymodeLint<CR>
+" PEP8 python intendation
+au BufNewFile,BufRead *.py 
+    \ set tabstop=4     |
+    \ set softtabstop=4 |
+    \ set shiftwidth=4  |
+    \ set textwidth=79  |
+    \ set expandtab     |
+    \ set autoindent    |
+    \ set fileformat=unix
 
-" автокомплит через <Ctrl+Space>
-inoremap <C-space> <C-x><C-o>
+" Use the below highlight group when displaying bad whitespace is desired.
+highlight BadWhitespace ctermbg=red guibg=red
 
-" переключение между синтаксисами
-nnoremap <leader>Th :set ft=htmljinja<CR>
-nnoremap <leader>Tp :set ft=python<CR>
-nnoremap <leader>Tj :set ft=javascript<CR>
-nnoremap <leader>Tc :set ft=css<CR>
-nnoremap <leader>Td :set ft=django<CR>
+" Display tabs at the beginning of a line in Python mode as bad.
+au BufRead,BufNewFile *.py,*.pyw match BadWhitespace /^\t\+/
+
+" Make trailing whitespace be flagged as bad.
+au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
+
+" Wrap text after a certain number of characters
+au BufRead,BufNewFile *.py,*.pyw, set textwidth=100
+
+" Use UNIX (\n) line endings.
+au BufNewFile *.py,*.pyw,*.c,*.h set fileformat=unix
+
+" Set the default file encoding to UTF-8:
+set encoding=utf-8
+
+" other files
+au BufNewFile,BufRead *.js, *.html, *.css
+    \ set tabstop=2    |
+    \ set softtabstop=2|
+    \ set shiftwidth=2 |
+
+" allow backspacing over everything in insert mode
+set backspace=indent,eol,start
+
+if has("vms")
+  set nobackup		" do not keep a backup file, use versions instead
+else
+  set backup		" keep a backup file (restore to previous version)
+  set undofile		" keep an undo file (undo changes after closing)
+endif
+
+set history=50		" keep 50 lines of command line history
+set ruler		" show the cursor position all the time
+set showcmd		" display incomplete commands
+set incsearch		" do incremental searching
+
+" For Win32 GUI: remove 't' flag from 'guioptions': no tearoff menu entries
+" let &guioptions = substitute(&guioptions, "t", "", "g")
+
+" CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
+" so that you can undo CTRL-U after inserting a line break.
+inoremap <C-U> <C-G>u<C-U>
+
+let python_highlight_all=1
+syntax on
+
+set hlsearch " to delete highligtings, enter: nohlsearch
 
 
-"=====================================================
-" Languages support
-"=====================================================
-" --- Python ---
-"autocmd FileType python set completeopt-=preview " раскомментируйте, в случае, если не надо, чтобы jedi-vim показывал документацию по методу/классу
-autocmd FileType python setlocal expandtab shiftwidth=4 tabstop=8
-\ formatoptions+=croq softtabstop=4 smartindent
-\ cinwords=if,elif,else,for,while,try,except,finally,def,class,with
-autocmd FileType pyrex setlocal expandtab shiftwidth=4 tabstop=8 softtabstop=4 smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class,with
+" Only do this part when compiled with support for autocommands.
+if has("autocmd")
 
-" --- JavaScript ---
-let javascript_enable_domhtmlcss=1
-autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-autocmd BufNewFile,BufRead *.json setlocal ft=javascript
+  " Enable file type detection.
+  " Use the default filetype settings, so that mail gets 'tw' set to 72,
+  " 'cindent' is on in C files, etc.
+  " Also load indent files, to automatically do language-dependent indenting.
+  filetype plugin indent on
 
-" --- HTML ---
-autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
+  " Put these in an autocmd group, so that we can delete them easily.
+  augroup vimrcEx
+  au!
 
-" --- template language support (SGML / XML too) ---
-autocmd FileType html,xhtml,xml,htmldjango,htmljinja,eruby,mako setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
-autocmd bufnewfile,bufread *.rhtml setlocal ft=eruby
-autocmd BufNewFile,BufRead *.mako setlocal ft=mako
-autocmd BufNewFile,BufRead *.tmpl setlocal ft=htmljinja
-autocmd BufNewFile,BufRead *.py_tmpl setlocal ft=python
-let html_no_rendering=1
-let g:closetag_default_xml=1
-let g:sparkupNextMapping='<c-l>'
-autocmd FileType html,htmldjango,htmljinja,eruby,mako let b:closetag_html_style=1
-autocmd FileType html,xhtml,xml,htmldjango,htmljinja,eruby,mako source ~/.vim/scripts/closetag.vim
+  " For all text files set 'textwidth' to 78 characters.
+  autocmd FileType text setlocal textwidth=78
 
-" --- CSS ---
-autocmd FileType css set omnifunc=csscomplete#CompleteCSS
-autocmd FileType css setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4
+  " When editing a file, always jump to the last known cursor position.
+  " Don't do it when the position is invalid or when inside an event handler
+  " (happens when dropping a file on gvim).
+  autocmd BufReadPost *
+    \ if line("'\"") >= 1 && line("'\"") <= line("$") |
+    \   exe "normal! g`\"" |
+    \ endif
 
+  augroup END
 
+else
 
+  set autoindent		" always set autoindenting on
+
+endif " has("autocmd")
+
+" Convenient command to see the difference between the current buffer and the
+" file it was loaded from, thus the changes you made.
+" Only define it when not defined already.
+if !exists(":DiffOrig")
+  command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
+		  \ | wincmd p | diffthis
+endif
+
+set nu
+set clipboard=unnamed
