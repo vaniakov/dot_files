@@ -1,193 +1,336 @@
-" Use Vim settings, rather than Vi settings (much better!).
-" This must be first, because it changes other options as a side effect.
+"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+"                                                                              "
+"                       __   _ _ _ __ ___  _ __ ___                            "
+"                       \ \ / / | '_ ` _ \| '__/ __|                           "
+"                        \ V /| | | | | | | | | (__                            "
+"                         \_/ |_|_| |_| |_|_|  \___|                           "
+"                                                                              "
+"                                                                              "
+"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 
-set nocompatible              " required
-filetype off                  " required
+let $vimhome = $HOME."/.vim"
+" let $vimhome=fnamemodify(resolve(expand("~/.vimrc")), ':p:h')
+" let $vundle=$vimhome."/bundle/Vundle.vim"
 
-" set the runtime path to include Vundle and initialize
+" Be iMproved
+set nocompatible
+
+"=====================================================
+"" Vundle settings
+"=====================================================
+filetype off
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
+    Plugin 'VundleVim/Vundle.vim'               " let Vundle manage Vundle, required
+    Plugin 'flazz/vim-colorschemes'
+    Plugin 'sjl/badwolf'
+    Plugin 'bling/vim-airline'                  " Lean & mean status/tabline for vim
+    Plugin 'vim-airline/vim-airline-themes'     " Themes for airline
+    Plugin 'ctrlpvim/ctrlp.vim'                 " Ctrl-p: fuzzy file search
+    Plugin 'majutsushi/tagbar'                  " Vim plugin that displays tags in a window, ordered by scope http://majutsushi.github.io/tagbar/
+    Plugin 'scrooloose/nerdtree'                " File system navigation
+    Plugin 'davidhalter/jedi-vim'
+"    Plugin 'martinda/Jenkinsfile-vim-syntax'
+    Plugin 'jessedhillon/vim-easycomment'
+    Plugin 'ervandew/supertab'
+    Plugin 'neomake/neomake'
+    Plugin 'w0rp/ale'
+    Plugin 'fatih/vim-go'
+    Plugin 'Shougo/deoplete.nvim'
+    Plugin 'psf/black'
+    Plugin 'airblade/vim-gitgutter'
+    Plugin 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+    Plugin 'junegunn/fzf.vim'
 
-" let Vundle manage Vundle, required
-Plugin 'gmarik/Vundle.vim'
+    " themes
+    Plugin 'fatih/molokai'
+    Plugin 'morhetz/gruvbox'
 
-" Add all your plugins here (note older versions of Vundle used Bundle instead of Plugin)
-
-Plugin 'scrooloose/syntastic'
-Plugin 'nvie/vim-flake8'
-Plugin 'altercation/vim-colors-solarized'
+    " syntax highlighting
+    Plugin 'vim-python/python-syntax'
+    Plugin 'sheerun/vim-polyglot'
 
 
-set background=dark
-let g:solarized_termcolors=256
-colorscheme solarized
+call vundle#end()                           " required
+filetype on
+filetype plugin on
+filetype plugin indent on
 
-function! ToggleBackground()
-    if (w:solarized_style=="dark")
-    let w:solarized_style="light"
-    colorscheme solarized
-else
-    let w:solarized_style="dark"
-    colorscheme solarized
-endif
-endfunction
-command! Togbg call ToggleBackground()
-nnoremap <F5> :call ToggleBackground()<CR>
-inoremap <F5> <ESC>:call ToggleBackground()<CR>a
-vnoremap <F5> <ESC>:call ToggleBackground()<CR>
+" Extensions setup
+let g:python_highlight_all = 1
+let g:SuperTabDefaultCompletionType = "<C-X><C-O>"
 
-"call togglebg#map("<F5>")
+" Easy comment
+vmap <silent> <C-_> :call ToggleCommentVisual()<CR>
+nmap <silent> <C-_> :call ToggleCommentLine()<CR>
+au FileType python let b:comment_style="inline"
+au FileType python let b:comment_opener="#"
 
-Plugin 'scrooloose/nerdtree'
-Plugin 'jistr/vim-nerdtree-tabs'
+au FileType yaml let b:comment_style="inline"
+au FileType yaml let b:comment_opener="#"
 
-map <C-n> :NERDTreeToggle<CR>
+au FileType vimrc let b:comment_style="inline"
+au FileType vimrc let b:comment_opener='"'
 
-let NERDTreeIgnore=['\.pyc$', '\~$'] "ignore files in NERDTree
-" open a NERDTree automatically when vim starts up if no files were specified
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+au FileType go let b:comment_style="inline"
+au FileType go let b:comment_opener='//'
 
-" open NERDTree automatically when vim starts up on opening a directory
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
+" DEOPLETE
+let g:deoplete#enable_at_startup = 1
 
-" I close vim if the only window left open is a NERDTree
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+" Black
+let g:black_linelength = 100
+"let g:black_skip_string_normalization = 0
+"let g:black_fast = 0
 
-Plugin 'kien/ctrlp.vim'
+" VIM-GO
+let g:go_list_type = "quickfix"
+let g:go_highlight_diagnostic_warnings = 0
+let g:go_highlight_diagnostic_errors = 1
+let g:go_fmt_command = "goimports"
+let g:go_def_mode='gopls'
+let g:go_info_mode='gopls'
+let g:go_rename_command = 'gopls'
+let g:go_highlight_string_spellcheck = 1
+let g:go_highlight_format_strings = 1
 
-Plugin 'tpope/vim-fugitive'
+" ALE
+let g:ale_linters = {
+	\ 'go': ['gopls'],
+	\}
+let g:ale_fixers = {
+\   '*': ['remove_trailing_lines', 'trim_whitespace'],
+\   'python': ['black', 'isort'],
+\}
+let g:ale_fix_on_save = 1
 
-Plugin 'vim-airline/vim-airline'
+let g:ale_enabled = 1
+let g:airline#extensions#ale#enabled = 1
+let g:ale_virtualtext_cursor = 1
+let g:ale_sign_column_always = 1
+highlight clear ALEErrorSign
+highlight clear ALEWarningSig
+highlight clear ALEWarning
+highlight clear ALEError
+let g:ale_set_highlights = 0
+let g:ale_open_list = 0
+let g:ale_go_gometalinter_executable = 'golangcli-lint'
+let g:ale_sign_error = '❗' " 🔴 🚫
+let g:ale_sign_warning= '⚠️'
+let g:ale_sign_info= 'ℹ'
+let g:ale_virtualtext_prefix = ' > '
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+let g:ale_python_pylint_options = "--max-line-length=120 --load-plugins pylint_django"
+let g:ale_python_flake8_options = "--max-line-length=120"
+
+
+" Jedi vim
+let g:jedi#show_call_signatures = "1"
+
+" Bindings
+let g:jedi#documentation_command = "K"
+let g:jedi#usages_command = "<leader>n"
+let g:jedi#completions_command = "<C-Space>"
+let g:jedi#rename_command = "<leader>r"
+
+
+" "Vim-airline
 let g:airline_powerline_fonts = 1
-
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
-
-" make buffer appear at right while using vsp <file_name>
-set splitright
-set splitbelow
-
-"split navigations
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
-
-" Enable folding
-set foldmethod=indent
-set foldlevel=99
-
-" Enable folding with the spacebar
-nnoremap <space> za
+let g:airline#extensions#tabline#enabled = 1
 
 
-" PEP8 python intendation
-au BufNewFile,BufRead *.py 
-    \ set tabstop=4     |
-    \ set softtabstop=4 |
-    \ set shiftwidth=4  |
-    \ set textwidth=79  |
-    \ set expandtab     |
-    \ set autoindent    |
-    \ set fileformat=unix
+" Tagbar
+nmap <F8> :TagbarToggle<CR>
+let g:tagbar_width=40
+"autocmd VimEnter *.py nested :call tagbar#autoopen(1)
+let g:tagbar_sort=0
 
-" Use the below highlight group when displaying bad whitespace is desired.
-highlight BadWhitespace ctermbg=red guibg=red
+" NERDTree
+let NERDTreeIgnore=['\.pyc$', '\.pyo$', '__pycache__$']     " Ignore files in NERDTree
+let NERDTreeWinSize=35
+let NERDTreeQuitOnOpen = 1
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+" autocmd VimEnter * if !argc() | NERDTree | endif  " Load NERDTree only if vim is run without arguments
+nmap " :NERDTreeToggle<CR>
+let NERDTreeAutoDeleteBuffer = 1
 
-" Display tabs at the beginning of a line in Python mode as bad.
-au BufRead,BufNewFile *.py,*.pyw match BadWhitespace /^\t\+/
+" Sytastic
+set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
 
-" Make trailing whitespace be flagged as bad.
-au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
+"let g:syntastic_always_populate_loc_list = 1
+"let g:syntastic_auto_loc_list = 1
+let g:syntastic_enable_signs=1
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
+"let g:syntastic_check_on_w = 1
+let g:syntastic_aggregate_errors=1
+"let g:syntastic_loc_list_height=5
+let g:syntastic_error_symbol='X'
+let g:syntastic_style_error_symbol='X'
+let g:syntastic_warning_symbol='x'
+let g:syntastic_style_warning_symbol='x'
+let g:syntastic_python_checkers=['flake8', 'pylint']
+let g:syntastic_python_pylint_post_args='--disable=R,C'
 
-" Wrap text after a certain number of characters
-au BufRead,BufNewFile *.py,*.pyw, set textwidth=100
+" When writing a buffer (no delay), and on normal mode changes (after 750ms).
+"call neomake#configure#automake('nw', 750)
 
-" Use UNIX (\n) line endings.
-au BufNewFile *.py,*.pyw,*.c,*.h set fileformat=unix
+nnoremap <silent> <C-d> :lclose<CR>:bdelete!<CR>
+cabbrev <silent> bd <C-r>=(getcmdtype()==#':' && getcmdpos()==1 ? 'lclose\|bdelete' : 'bd')<CR>
 
-" Set the default file encoding to UTF-8:
-set encoding=utf-8
+" General settings
+" colorscheme
+"
+let g:gruvbox_contrast_dark='hard'
+set termguicolors
+colorscheme gruvbox
+hi Normal guibg=NONE ctermbg=NONE
 
-" other files
-au BufNewFile,BufRead *.js, *.html, *.css
-    \ set tabstop=2    |
-    \ set softtabstop=2|
-    \ set shiftwidth=2 |
+" enable syntax highlighting
+syntax enable
 
-" allow backspacing over everything in insert mode
+" leader is comma
+let mapleader=","
+
+" show line numbers
+set number
+
+" set tabs to have 4 spaces
+set ts=4
+
+" indent when moving to the next line while writing code
+set autoindent
+
+" expand tabs into spaces
+set expandtab
+
+" when using the >> or << commands, shift lines by 4 spaces
+set shiftwidth=4
+
+" show a visual line under the cursor's current line
+set cursorline
+
+" number of spaces in tab when editing
+set softtabstop=4
+set tabstop=4
+
+" show the matching part of the pair for [] {} and ()
+set showmatch
+
+" show command in bottom bar
+set showcmd
+
+" visual autocomplete for command menu
+set wildmenu
+
+" Ignore compiled files
+set wildignore=*.o,*~,*.pyc
+
+" search as characters are entered
+set incsearch
+
+" highlight matches
+set hlsearch
+
+" Tell vim to remember certain things when we exit
+"  '10  :  marks will be remembered for up to 10 previously edited files
+"  "100 :  will save up to 100 lines for each register
+"  :20  :  up to 20 lines of command-line history will be remembered
+"  %    :  saves and restores the buffer list
+"  n... :  where to save the viminfo files
+set viminfo='10,\"100,:20,%,n~/.viminfo
+
+" turn off search highlight
+nnoremap <leader><space> :nohlsearch<CR>
+
+" function that restores the cursor position and its autocmd so that it gets triggered
+function! ResCur()
+  if line("'\"") <= line("$")
+    normal! g`"
+    return 1
+  endif
+endfunction
+
+augroup resCur
+  autocmd!
+  autocmd BufWinEnter * call ResCur()
+augroup END
+
+" move to beginning/end of line
+nnoremap B ^
+nnoremap E $
+
+" enable all Python syntax highlighting features
+let python_highlight_all = 1
+
+" Fast saving
+nmap <leader>w :w!<cr>
+
+" :W sudo saves the file
+" (useful for handling the permission-denied error)
+"command W w !sudo tee % > /dev/null
+
+" Add a bit extra margin to the left
+set foldcolumn=1
+
+" Persistend undo between sessions
+set undofile
+set undodir=$vimhome/undodir
+
+"=====================================================
+"" Tabs / Buffers settings
+"=====================================================
+tab sball
+set switchbuf=useopen
+set laststatus=2
+nmap <F9> :bprev<CR>
+nmap <F10> :bnext<CR>
+"nmap <silent> <leader>q :SyntasticCheck # <CR> :bp <BAR> bd #<CR>
+
+
+" Smart way to move between windows
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+map <C-h> <C-W>h
+map <C-l> <C-W>l
+
+" Close the current buffer
+"map <leader>d :bdelete<cr>
+map <leader>l :bnext<cr>
+map <leader>h :bprevious<cr>
+
+
+" Useful mappings for managing tabs
+map <leader>tc :tabnew<cr>
+map <leader>to :tabonly<cr>
+map <leader>tw :tabclose<cr>
+map <leader>tm :tabmove
+map <leader>tn<leader> :tabnext
+
+set laststatus=2
 set backspace=indent,eol,start
+set clipboard=unnamedplus
 
-if has("vms")
-  set nobackup		" do not keep a backup file, use versions instead
-else
-  set backup		" keep a backup file (restore to previous version)
-  set undofile		" keep an undo file (undo changes after closing)
-endif
+" Highlight trailing whitespace in red
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$/
+" Have this highlighting not appear whilst you are typing in insert mode
+" Have the highlighting of whitespace apply when you open new buffers
+autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+autocmd BufWinLeave * call clearmatches()
 
-set history=50		" keep 50 lines of command line history
-set ruler		" show the cursor position all the time
-set showcmd		" display incomplete commands
-set incsearch		" do incremental searching
-
-" For Win32 GUI: remove 't' flag from 'guioptions': no tearoff menu entries
-" let &guioptions = substitute(&guioptions, "t", "", "g")
-
-" CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
-" so that you can undo CTRL-U after inserting a line break.
-inoremap <C-U> <C-G>u<C-U>
-
-let python_highlight_all=1
-syntax on
-
-set hlsearch " to delete highligtings, enter: nohlsearch
-
-
-" Only do this part when compiled with support for autocommands.
-if has("autocmd")
-
-  " Enable file type detection.
-  " Use the default filetype settings, so that mail gets 'tw' set to 72,
-  " 'cindent' is on in C files, etc.
-  " Also load indent files, to automatically do language-dependent indenting.
-  filetype plugin indent on
-
-  " Put these in an autocmd group, so that we can delete them easily.
-  augroup vimrcEx
-  au!
-
-  " For all text files set 'textwidth' to 78 characters.
-  autocmd FileType text setlocal textwidth=78
-
-  " When editing a file, always jump to the last known cursor position.
-  " Don't do it when the position is invalid or when inside an event handler
-  " (happens when dropping a file on gvim).
-  autocmd BufReadPost *
-    \ if line("'\"") >= 1 && line("'\"") <= line("$") |
-    \   exe "normal! g`\"" |
-    \ endif
-
-  augroup END
-
-else
-
-  set autoindent		" always set autoindenting on
-
-endif " has("autocmd")
-
-" Convenient command to see the difference between the current buffer and the
-" file it was loaded from, thus the changes you made.
-" Only define it when not defined already.
-if !exists(":DiffOrig")
-  command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
-		  \ | wincmd p | diffthis
-endif
-
-set nu
-set clipboard=unnamed
+" Remove trailing whitespaces
+function! CleanUpWs()
+    %s/\s\+$//e
+     |norm!``
+endf
+aug CleanUp
+    au BufWritePre * if !&bin | call CleanUpWs() | endi
+aug END
