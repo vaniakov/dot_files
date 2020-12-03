@@ -16,4 +16,5 @@ alias dc="docker-compose"
 alias gofam="cd ~/scalr/fatmouse"
 alias goscalr="cd ~/scalr/scalr"
 alias cli="~/scalr/fatmouse/clickfile.py"
-alias devbox="python3 ~/scalr/fatmouse/clickfile.py devbox up"
+alias devbox="~/.virtualenvs/scalr/bin/python ~/scalr/fatmouse/clickfile.py devbox up"
+

@@ -4,6 +4,13 @@ function ssh_sliver_stage_worker() {
     gcloud beta compute ssh --zone "us-central1-a" "celery-worker-1" --project "ace-momentum-248417"
 }
 
+function git_branch() {
+  GIT_BRANCH=$(git symbolic-ref --short HEAD 2> /dev/null)
+  if [[ ! -z $GIT_BRANCH ]]; then
+      echo " ($GIT_BRANCH)"
+  fi
+}
+
 # branch
 function br() {
   GIT_BRANCH=$(git symbolic-ref --short HEAD 2> /dev/null)
@@ -12,17 +19,10 @@ function br() {
   fi
 }
 
-function git_branch() {
-  GIT_BRANCH=$(git symbolic-ref --short HEAD 2> /dev/null)
-  if [[ ! -z $GIT_BRANCH ]]; then
-    echo " ($GIT_BRANCH)"
-  fi
-}
-
-
 # test environment ssh: Scalr
 
 DEFAULT_TEST_ENV_HOST="test-env.scalr.com"
+TE=$DEFAULT_TEST_ENV_HOST
 LAST_TE_PORT_FILE=~/.test-env-port
 
 te(){
@@ -44,7 +44,18 @@ te(){
         fi
     fi
     shift;
+    set -x
     ssh -i ~/.ssh/scalr_id_rsa -l root -p $TE_PORT ${2:-$DEFAULT_TEST_ENV_HOST} -t 'bash --rcfile ~/.dark_customrc -i' $@
+    set +x
+}
+
+sync(){
+    TE_PORT=$(cat $LAST_TE_PORT_FILE)
+    FAM_PATH=/opt/scalr-server/embedded/scalr/app/python/fatmouse
+    set -x
+    ssh -q -i ~/.ssh/scalr_id_rsa -l root -p $TE_PORT $DEFAULT_TEST_ENV_HOST mkdir -p $FAM_PATH/$(dirname "$1")
+    rsync --progress -avz -e "ssh -q -i ~/.ssh/scalr_id_rsa -l root -p $TE_PORT" $PWD/${1:-"server/terraform"} $DEFAULT_TEST_ENV_HOST:$FAM_PATH/${1:-"server/terraform"}
+    set +x
 }
 
 te_exec(){
@@ -60,7 +71,9 @@ te_exec(){
 	    return 1
     fi
 
-    ssh -i ~/.ssh/scalr_id_rsa -l root -p $TE_PORT ${2:-$DEFAULT_TEST_ENV_HOST} $1
+    set -x
+    ssh -i ~/.ssh/scalr_id_rsa -l root -p $TE_PORT ${DEFAULT_TEST_ENV_HOST} -t 'bash --rcfile ~/.bashrc -i'  $@
+    set +x
 }
 
 

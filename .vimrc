@@ -23,41 +23,48 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
     Plugin 'VundleVim/Vundle.vim'               " let Vundle manage Vundle, required
-    Plugin 'flazz/vim-colorschemes'
-    Plugin 'sjl/badwolf'
     Plugin 'bling/vim-airline'                  " Lean & mean status/tabline for vim
-    Plugin 'vim-airline/vim-airline-themes'     " Themes for airline
-    Plugin 'ctrlpvim/ctrlp.vim'                 " Ctrl-p: fuzzy file search
-    Plugin 'majutsushi/tagbar'                  " Vim plugin that displays tags in a window, ordered by scope http://majutsushi.github.io/tagbar/
     Plugin 'scrooloose/nerdtree'                " File system navigation
-    Plugin 'davidhalter/jedi-vim'
-"    Plugin 'martinda/Jenkinsfile-vim-syntax'
+    Plugin 'martinda/Jenkinsfile-vim-syntax'
     Plugin 'jessedhillon/vim-easycomment'
     Plugin 'ervandew/supertab'
     Plugin 'neomake/neomake'
     Plugin 'w0rp/ale'
     Plugin 'fatih/vim-go'
     Plugin 'Shougo/deoplete.nvim'
+    Plugin 'davidhalter/jedi-vim'
+    Plugin 'deoplete-plugins/deoplete-jedi'
     Plugin 'psf/black'
     Plugin 'airblade/vim-gitgutter'
+    Plugin 'tpope/vim-fugitive'
     Plugin 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
     Plugin 'junegunn/fzf.vim'
 
     " themes
+    Plugin 'sjl/badwolf'
     Plugin 'fatih/molokai'
     Plugin 'morhetz/gruvbox'
 
     " syntax highlighting
+    Plugin 'tsandall/vim-rego'
     Plugin 'vim-python/python-syntax'
     Plugin 'sheerun/vim-polyglot'
 
-
 call vundle#end()                           " required
+
 filetype on
 filetype plugin on
 filetype plugin indent on
 
 " Extensions setup
+
+" fzf
+map <C-P> :Files <CR>
+map <C-G> :GFiles <CR>
+map <C-B> :Buffers <CR>
+map <leader>f :Rg<CR>
+map <leader><leader> :Commands <CR>
+
 let g:python_highlight_all = 1
 let g:SuperTabDefaultCompletionType = "<C-X><C-O>"
 
@@ -101,10 +108,11 @@ let g:ale_linters = {
 	\}
 let g:ale_fixers = {
 \   '*': ['remove_trailing_lines', 'trim_whitespace'],
-\   'python': ['black', 'isort'],
+\   'python': ['black'],
 \}
 let g:ale_fix_on_save = 1
 
+let g:pymode_rope = 0
 let g:ale_enabled = 1
 let g:airline#extensions#ale#enabled = 1
 let g:ale_virtualtext_cursor = 1
@@ -128,6 +136,7 @@ let g:ale_python_flake8_options = "--max-line-length=120"
 
 
 " Jedi vim
+let g:jedi#completions_enabled = 0
 let g:jedi#show_call_signatures = "1"
 
 " Bindings
@@ -140,6 +149,10 @@ let g:jedi#rename_command = "<leader>r"
 " "Vim-airline
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
+
+" pasting
+nnoremap p "+gp
+vnoremap p "+gp
 
 
 " Tagbar
@@ -187,15 +200,17 @@ cabbrev <silent> bd <C-r>=(getcmdtype()==#':' && getcmdpos()==1 ? 'lclose\|bdele
 " colorscheme
 "
 let g:gruvbox_contrast_dark='hard'
-set termguicolors
 colorscheme gruvbox
-hi Normal guibg=NONE ctermbg=NONE
 
 " enable syntax highlighting
 syntax enable
 
 " leader is comma
 let mapleader=","
+
+" set shell to bash
+set shell=/bin/bash\ --rcfile\ ~/.bash_profile
+map <leader>c :!sync &<cr>
 
 " show line numbers
 set number
