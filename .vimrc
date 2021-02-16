@@ -24,8 +24,8 @@ call vundle#begin()
 
     Plugin 'VundleVim/Vundle.vim'               " let Vundle manage Vundle, required
     Plugin 'bling/vim-airline'                  " Lean & mean status/tabline for vim
-    Plugin 'scrooloose/nerdtree'                " File system navigation
-    Plugin 'martinda/Jenkinsfile-vim-syntax'
+"    Plugin 'scrooloose/nerdtree'                " File system navigation
+"    Plugin 'martinda/Jenkinsfile-vim-syntax'
     Plugin 'jessedhillon/vim-easycomment'
     Plugin 'ervandew/supertab'
     Plugin 'neomake/neomake'
@@ -41,8 +41,8 @@ call vundle#begin()
     Plugin 'junegunn/fzf.vim'
 
     " themes
-    Plugin 'sjl/badwolf'
-    Plugin 'fatih/molokai'
+"    Plugin 'sjl/badwolf'
+"    Plugin 'fatih/molokai'
     Plugin 'morhetz/gruvbox'
 
     " syntax highlighting
@@ -56,12 +56,16 @@ filetype on
 filetype plugin on
 filetype plugin indent on
 
+" leader is comma
+let mapleader=","
+
+
 " Extensions setup
 
 " fzf
 map <C-P> :Files <CR>
 map <C-G> :GFiles <CR>
-map <C-B> :Buffers <CR>
+map <leader>b :Buffers <CR>
 map <leader>f :Rg<CR>
 map <leader><leader> :Commands <CR>
 
@@ -204,9 +208,6 @@ colorscheme gruvbox
 
 " enable syntax highlighting
 syntax enable
-
-" leader is comma
-let mapleader=","
 
 " set shell to bash
 set shell=/bin/bash\ --rcfile\ ~/.bash_profile

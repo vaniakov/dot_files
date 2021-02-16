@@ -9,19 +9,26 @@ export PAGER=less
 export PATH=$HOME/bin:$PATH
 export PATH=$PATH:/usr/local/go/bin:${HOME}/go/bin
 export GOPATH=$(go env GOPATH)
-export PATH=/snap/bin:$PATH
+
+# avoid duplicates..
+export HISTCONTROL=ignoredups:erasedups
+
+# append history entries..
+shopt -s histappend
+
+# After each command, save and reload history
+export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
 
 
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
     PREFIX=$(brew --prefix)
-    # Setting PATH for Python 3.7
-    export PATH="/Library/Frameworks/Python.framework/Versions/3.7/bin:${PATH}"
-    # Setting PATH for Python 2.7
-    export PATH=/Users/ivan/Library/Python/2.7/bin:$PATH
+    #export PATH="/Library/Frameworks/Python.framework/Versions/3.7/bin:${PATH}"
+    #export PATH=/Users/ivan/Library/Python/2.7/bin:$PATH
     export PATH=$PATH:/Applications/calibre.app/Contents/console.app/Contents/MacOS
 else
+    export PATH=/snap/bin:$PATH
     PREFIX=""
 fi
 
@@ -31,9 +38,14 @@ if [ -f $PREFIX/etc/bash_completion.d/git-completion.bash ]; then
 fi
 
 # kubectl autocompletion
-source <(kubectl completion bash)
-if [ -f $PREFIX/etc/bash_completion ]; then
-. $PREFIX/etc/bash_completion
+if command -v kubectl &> /dev/null; then
+    source <(kubectl completion bash)
+fi
+
+
+# aws autocompletion
+if command -v aws &> /dev/null; then
+    complete -C '/usr/local/bin/aws_completer' aws
 fi
 
 # The next line updates PATH for the Google Cloud SDK.
@@ -53,3 +65,5 @@ source /usr/local/bin/virtualenvwrapper_lazy.sh
 FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border --extended'
 
 [ -f "/Users/ivan/.ghcup/env" ] && source "/Users/ivan/.ghcup/env" # ghcup-env
+
+test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"

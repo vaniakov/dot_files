@@ -1,1 +1,2 @@
-[[ -f ~/.bashrc ]] && source ~/.bashrc # ghcup-env
+[[ -f ~/.bashrc ]] && source ~/.bashrc
+
