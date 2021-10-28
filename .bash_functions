@@ -6,6 +6,11 @@ co() {
     git checkout "$(git branch --sort=-committerdate -vv  | fzf | xargs | cut -d " " -f1)"
 }
 
+
+function display_notification () {
+    osascript -e "display notification \"${1}\" with title \"${2:-Terminal notification}\" sound name \"/System/Library/Sounds/Submarine.aiff\""
+}
+
 decode_base64_url() {
   local len=$((${#1} % 4))
   local result="$1"

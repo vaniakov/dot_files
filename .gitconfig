@@ -1,5 +1,6 @@
 [user]
-	name = "Ivan Kovalkovskyi"
+	name = Ivan Kovalkovskyi
+	email = ivankovalkovskyi@blameless.com
 [alias]
 	co = checkout
 	br = branch
@@ -23,8 +24,12 @@
 	diffr  = "!f() { git diff "$1"^.."$1"; }; f"
 	f = "!git ls-files | grep -i"
 	la = "!git config -l | grep alias | cut -c 7-"
-	bumpfam = "!f() { git branch | grep '*' | cut -d '/' -f 2; }; git add fatmouse && git commit -m \"$(f) bump fatmouse\""
 
 [core]
 	autocrlf = false
 	excludesfile = nul
+
+[url "ssh://git@github.com/"]
+	insteadOf = https://github.com/
+[oh-my-zsh]
+	hide-dirty = 1

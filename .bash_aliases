@@ -1,6 +1,6 @@
 alias ls="exa"
 alias tree="exa --tree"
-alias ll="ls -lahFG"
+alias ll="ls -lah"
 alias l="ls"
 alias gti="git"
 alias gits="git status"
@@ -13,3 +13,8 @@ alias grep="rg"
 alias vim="nvim"
 alias tf="terraform"
 alias dc="docker-compose"
+
+alias gows="cd ~/lohika/blameless/workspace"
+alias gocoms="cd ~/lohika/blameless/workspace/blameless/comms-flow"
+
+alias notify="tput bel"

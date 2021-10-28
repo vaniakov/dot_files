@@ -66,7 +66,7 @@ map <leader>b :Buffers <CR>
 map <leader>f :Rg<CR>
 map <leader><leader> :Commands <CR>
 
-let g:python3_host_prog = $HOME . "/.virtualenvs/nvim/bin/python3"
+"let g:python3_host_prog = $HOME . "/.virtualenvs/nvim/bin/python3"
 let g:python_highlight_all = 1
 let g:SuperTabDefaultCompletionType = "<C-X><C-O>"
 
@@ -84,6 +84,12 @@ au FileType vimrc let b:comment_opener='"'
 
 au FileType go let b:comment_style="inline"
 au FileType go let b:comment_opener='//'
+
+au FileType go nnoremap <leader>d :GoDef<CR>
+au FileType go nnoremap <leader>r :GoReferrers<CR>
+au FileType go nnoremap <leader>n :GoRename<CR>
+
+
 
 " DEOPLETE
 let g:deoplete#enable_at_startup = 1
@@ -168,8 +174,8 @@ let NERDTreeIgnore=['\.pyc$', '\.pyo$', '__pycache__$']     " Ignore files in NE
 let NERDTreeWinSize=35
 let NERDTreeQuitOnOpen = 1
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
-autocmd VimEnter * if !argc() | NERDTree | endif  " Load NERDTree only if vim is run without arguments
-nmap " :NERDTreeToggle<CR>
+"autocmd VimEnter * if !argc() | NERDTree | endif  " Load NERDTree only if vim is run without arguments
+"nmap " :NERDTreeToggle<CR>
 let NERDTreeAutoDeleteBuffer = 1
 
 " When writing a buffer (no delay), and on normal mode changes (after 750ms).
@@ -189,7 +195,7 @@ colorscheme molokai
 syntax enable
 
 " set shell to bash
-set shell=/bin/bash\ --rcfile\ ~/.bashrc
+"set shell=/bin/bash\ --rcfile\ ~/.bashrc
 map <leader>c :!sync &<cr>
 
 " show line numbers
@@ -295,7 +301,6 @@ map <C-h> <C-W>h
 map <C-l> <C-W>l
 
 " Close the current buffer
-map <leader>d :bdelete<cr>
 map <leader>l :bnext<cr>
 map <leader>h :bprevious<cr>
 
@@ -321,10 +326,10 @@ autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 autocmd BufWinLeave * call clearmatches()
 
 " Remove trailing whitespaces
-"function! CleanUpWs()
-"    %s/\s\+$//e
-"     |norm!``
-"endf
-"aug CleanUp
-"    au BufWritePre * if !&bin | call CleanUpWs() | endi
-"aug END
+function! CleanUpWs()
+    %s/\s\+$//e
+     |norm!``
+endf
+aug CleanUp
+    au BufWritePre * if !&bin | call CleanUpWs() | endi
+aug END
