@@ -1,8 +1,35 @@
 #!/bin/bash
 
-function ssh_sliver_stage_worker() {
-    gcloud beta compute ssh --zone "us-central1-a" "celery-worker-1" --project "ace-momentum-248417"
+
+# fzf checkout to branch
+co() {
+    git checkout "$(git branch --sort=-committerdate -vv  | fzf | xargs | cut -d " " -f1)"
 }
+
+
+function display_notification () {
+    osascript -e "display notification \"${1}\" with title \"${2:-Terminal notification}\" sound name \"/System/Library/Sounds/Submarine.aiff\""
+}
+
+decode_base64_url() {
+  local len=$((${#1} % 4))
+  local result="$1"
+  if [ $len -eq 2 ]; then result="$1"'=='
+  elif [ $len -eq 3 ]; then result="$1"'='
+  fi
+  echo "$result" | tr '_-' '/+' | base64 -d
+}
+
+decode_jwt(){
+   decode_base64_url $(echo -n $2 | cut -d "." -f $1) | jq .
+}
+
+# Decode JWT header
+alias jwth="decode_jwt 1"
+
+# Decode JWT Payload
+alias jwtp="decode_jwt 2"
+
 
 function git_branch() {
   GIT_BRANCH=$(git symbolic-ref --short HEAD 2> /dev/null)
@@ -58,24 +85,6 @@ sync(){
     set +x
 }
 
-te_exec(){
-    if [[ -f $LAST_TE_PORT_FILE ]] ; then
-        TE_PORT=$(cat $LAST_TE_PORT_FILE)
-        echo "[INFO] Using port: $TE_PORT"
-    else
-        echo "[ERROR] Execute te [port_number] first!"
-        return 1
-	fi
-    if [[ -z "$1" ]] ; then
-       echo "[ERROR] You must specify command as a first argument!"
-	    return 1
-    fi
-
-    set -x
-    ssh -i ~/.ssh/scalr_id_rsa -l root -p $TE_PORT ${DEFAULT_TEST_ENV_HOST} -t 'bash --rcfile ~/.bashrc -i'  $@
-    set +x
-}
-
 
 # Kubernetes functions: Newfire
 
@@ -114,4 +123,9 @@ function exec_pod {
     comm=${@-'bash'}
     echo "executing $comm at $pod_name"
     kubectl -n $namespace exec -it $pod_name $comm
+}
+
+function ctail {
+	path_=${1-"/opt/scalr-server/var/log/service/tf-*.log"}
+	tail -f $path_ | sed -e 's/\(.*FATAL.*\)/\o033[1;31m\1\o033[0;39m/' -e 's/\(.*ERROR.*\)/\o033[31m\1\o033[39m/' -e 's/\(.*WARNING.*\)/\o033[33m\1\o033[39m/' -e 's/\(.*INFO.*\)/\o033[32m\1\o033[39m/' -e 's/\(.*DEBUG.*\)/\o033[34m\1\o033[39m/' -e 's/\(.*Traceback.*\)/\o033[1;39m\1\o033[0;39m/'
 }

@@ -1,11 +1,10 @@
 [user]
-	name = Ivan Kovalkovskyi
-	email = ivankovalkovskyi@blameless.com
+	email = vaniakov95@gmail.com
+	name = "Ivan Kovalkovskyi"
 [alias]
 	co = checkout
 	br = branch
 	ci = commit
-	st = status
 	s = status
 	plog = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 	unstage = reset HEAD --
@@ -28,8 +27,3 @@
 [core]
 	autocrlf = false
 	excludesfile = nul
-
-[url "ssh://git@github.com/"]
-	insteadOf = https://github.com/
-[oh-my-zsh]
-	hide-dirty = 1

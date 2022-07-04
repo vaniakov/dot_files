@@ -1,5 +1,5 @@
-alias ll="ls -lahFG"
-alias l="ls"
+alias l="exa"
+alias ll="exa -laH@"
 alias gti="git"
 alias gits="git status"
 alias ..="cd .."
@@ -10,11 +10,9 @@ alias cat="bat -p"
 alias grep="rg"
 alias vim="nvim"
 alias tf="terraform"
-alias dc="docker-compose"
+alias dc="docker compose"
 
-# scalr
-alias gofam="cd ~/scalr/fatmouse"
-alias goscalr="cd ~/scalr/scalr"
-alias cli="~/scalr/fatmouse/clickfile.py"
-alias devbox="~/.virtualenvs/scalr/bin/python ~/scalr/fatmouse/clickfile.py devbox up"
+alias gows="cd ~/lohika/blameless/workspace"
+alias gocoms="cd ~/lohika/blameless/workspace/blameless/comms-flow"
 
+alias notify="tput bel"

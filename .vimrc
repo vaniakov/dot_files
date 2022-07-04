@@ -9,8 +9,6 @@
 "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 
 let $vimhome = $HOME."/.vim"
-" let $vimhome=fnamemodify(resolve(expand("~/.vimrc")), ':p:h')
-" let $vundle=$vimhome."/bundle/Vundle.vim"
 
 " Be iMproved
 set nocompatible
@@ -25,7 +23,7 @@ call vundle#begin()
     Plugin 'VundleVim/Vundle.vim'               " let Vundle manage Vundle, required
     Plugin 'bling/vim-airline'                  " Lean & mean status/tabline for vim
     Plugin 'scrooloose/nerdtree'                " File system navigation
-    Plugin 'martinda/Jenkinsfile-vim-syntax'
+    Plugin 'preservim/tagbar'
     Plugin 'jessedhillon/vim-easycomment'
     Plugin 'ervandew/supertab'
     Plugin 'neomake/neomake'
@@ -62,12 +60,13 @@ let mapleader=","
 " Extensions setup
 
 " fzf
-nmap <C-P> :Files <CR>
-nmap <C-G> :GFiles <CR>
-nmap <leader>b :Buffers <CR>
-nmap <leader>f :Rg <CR>
-nmap <leader><leader> :Commands <CR>
+map <C-P> :Files <CR>
+map <C-G> :GFiles <CR>
+map <leader>b :Buffers <CR>
+map <leader>f :Rg<CR>
+map <leader><leader> :Commands <CR>
 
+"let g:python3_host_prog = $HOME . "/.virtualenvs/nvim/bin/python3"
 let g:python_highlight_all = 1
 let g:SuperTabDefaultCompletionType = "<C-X><C-O>"
 
@@ -86,6 +85,12 @@ au FileType vimrc let b:comment_opener='"'
 au FileType go let b:comment_style="inline"
 au FileType go let b:comment_opener='//'
 
+au FileType go nnoremap <leader>d :GoDef<CR>
+au FileType go nnoremap <leader>r :GoReferrers<CR>
+au FileType go nnoremap <leader>n :GoRename<CR>
+
+
+
 " DEOPLETE
 let g:deoplete#enable_at_startup = 1
 
@@ -95,28 +100,29 @@ let g:black_linelength = 100
 "let g:black_fast = 0
 
 " VIM-GO
-let g:go_list_type = "quickfix"
-let g:go_highlight_diagnostic_warnings = 0
-let g:go_highlight_diagnostic_errors = 1
-let g:go_fmt_command = "goimports"
-let g:go_def_mode='gopls'
-let g:go_info_mode='gopls'
-let g:go_rename_command = 'gopls'
-let g:go_highlight_string_spellcheck = 1
-let g:go_highlight_format_strings = 1
+"let g:go_list_type = 'quickfix'
+"let g:go_highlight_diagnostic_warnings = 0
+"let g:go_highlight_diagnostic_errors = 1
+"let g:go_fmt_command = 'goimports'
+"let g:go_def_mode='gopls'
+"let g:go_info_mode='gopls'
+"let g:go_rename_command = 'gopls'
+"let g:go_highlight_string_spellcheck = 1
+"let g:go_highlight_format_strings = 1
+"
+let g:pymode_rope = 0
 
 " ALE
+let g:ale_enabled = 1
 let g:ale_linters = {
 	\ 'go': ['gopls'],
 	\}
 let g:ale_fixers = {
 \   '*': ['remove_trailing_lines', 'trim_whitespace'],
 \   'python': ['black'],
+\   'go': ['gofmt'],
 \}
 let g:ale_fix_on_save = 1
-
-let g:pymode_rope = 0
-let g:ale_enabled = 1
 let g:airline#extensions#ale#enabled = 1
 let g:ale_virtualtext_cursor = 1
 let g:ale_sign_column_always = 1
@@ -134,7 +140,7 @@ let g:ale_virtualtext_prefix = ' > '
 let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
-let g:ale_python_pylint_options = "--max-line-length=120 --load-plugins pylint_django"
+let g:ale_python_pylint_options = "--max-line-length=120"
 let g:ale_python_flake8_options = "--max-line-length=120"
 
 
@@ -157,7 +163,6 @@ let g:airline#extensions#tabline#enabled = 1
 nnoremap p "+gp
 vnoremap p "+gp
 
-
 " Tagbar
 nmap <F8> :TagbarToggle<CR>
 let g:tagbar_width=40
@@ -169,47 +174,28 @@ let NERDTreeIgnore=['\.pyc$', '\.pyo$', '__pycache__$']     " Ignore files in NE
 let NERDTreeWinSize=35
 let NERDTreeQuitOnOpen = 1
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
-" autocmd VimEnter * if !argc() | NERDTree | endif  " Load NERDTree only if vim is run without arguments
-nmap " :NERDTreeToggle<CR>
+"autocmd VimEnter * if !argc() | NERDTree | endif  " Load NERDTree only if vim is run without arguments
+"nmap " :NERDTreeToggle<CR>
 let NERDTreeAutoDeleteBuffer = 1
-
-" Sytastic
-set statusline+=%#warningmsg#
-"set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-
-"let g:syntastic_always_populate_loc_list = 1
-"let g:syntastic_auto_loc_list = 1
-let g:syntastic_enable_signs=1
-let g:syntastic_check_on_open = 0
-let g:syntastic_check_on_wq = 0
-"let g:syntastic_check_on_w = 1
-let g:syntastic_aggregate_errors=1
-"let g:syntastic_loc_list_height=5
-let g:syntastic_error_symbol='X'
-let g:syntastic_style_error_symbol='X'
-let g:syntastic_warning_symbol='x'
-let g:syntastic_style_warning_symbol='x'
-let g:syntastic_python_checkers=['flake8', 'pylint']
-let g:syntastic_python_pylint_post_args='--disable=R,C'
 
 " When writing a buffer (no delay), and on normal mode changes (after 750ms).
 "call neomake#configure#automake('nw', 750)
 
 nnoremap <silent> <C-d> :lclose<CR>:bdelete!<CR>
-cabbrev <silent> bd <C-r>=(getcmdtype()==#':' && getcmdpos()==1 ? 'lclose\|bdelete' : 'bd')<CR>
 
 " General settings
-" colorscheme
-"
-let g:gruvbox_contrast_dark='hard'
-colorscheme gruvbox
+
+set termguicolors
+
+"set bg=light
+"let g:gruvbox_contrast_dark='hard'
+colorscheme molokai
 
 " enable syntax highlighting
 syntax enable
 
 " set shell to bash
-set shell=/bin/bash\ --rcfile\ ~/.bash_profile
+"set shell=/bin/bash\ --rcfile\ ~/.bashrc
 map <leader>c :!sync &<cr>
 
 " show line numbers
@@ -288,7 +274,7 @@ nmap <leader>w :w!<cr>
 
 " :W sudo saves the file
 " (useful for handling the permission-denied error)
-"command W w !sudo tee % > /dev/null
+command W w !sudo tee % > /dev/null
 
 " Add a bit extra margin to the left
 set foldcolumn=1
@@ -315,10 +301,8 @@ map <C-h> <C-W>h
 map <C-l> <C-W>l
 
 " Close the current buffer
-"map <leader>d :bdelete<cr>
 map <leader>l :bnext<cr>
 map <leader>h :bprevious<cr>
-
 
 " Useful mappings for managing tabs
 map <leader>tc :tabnew<cr>
