@@ -56,14 +56,17 @@ filetype on
 filetype plugin on
 filetype plugin indent on
 
+" leader is comma
+let mapleader=","
+
 " Extensions setup
 
 " fzf
-map <C-P> :Files <CR>
-map <C-G> :GFiles <CR>
-map <C-B> :Buffers <CR>
-map <leader>f :Rg<CR>
-map <leader><leader> :Commands <CR>
+nmap <C-P> :Files <CR>
+nmap <C-G> :GFiles <CR>
+nmap <leader>b :Buffers <CR>
+nmap <leader>f :Rg <CR>
+nmap <leader><leader> :Commands <CR>
 
 let g:python_highlight_all = 1
 let g:SuperTabDefaultCompletionType = "<C-X><C-O>"
@@ -204,9 +207,6 @@ colorscheme gruvbox
 
 " enable syntax highlighting
 syntax enable
-
-" leader is comma
-let mapleader=","
 
 " set shell to bash
 set shell=/bin/bash\ --rcfile\ ~/.bash_profile
