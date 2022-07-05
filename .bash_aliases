@@ -12,6 +12,7 @@ alias vim="nvim"
 alias tf="terraform"
 alias dc="docker-compose"
 alias k="kubectl"
+alias sudo='sudo '
 
 alias gows="cd ~/lohika/blameless/workspace"
 alias gocoms="cd ~/lohika/blameless/workspace/blameless/comms-flow"
