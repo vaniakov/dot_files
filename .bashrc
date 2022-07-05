@@ -6,6 +6,9 @@ export PS1="\[\033[32m\]\u@\h\[\033[00m\] \w\[\033[33m\]\$(git_branch)\[\033[00m
 export PATH=$HOME/bin:$PATH
 export PATH=$PATH:/usr/local/go/bin:${HOME}/go/bin
 
+# append history entries..
+shopt -s histappend
+
 
 # bash completion
 if [ -f $PREFIX/etc/bash_completion ]; then
