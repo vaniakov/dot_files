@@ -31,7 +31,7 @@ call vundle#begin()
     Plugin 'fatih/vim-go'
     Plugin 'Shougo/deoplete.nvim'
     Plugin 'davidhalter/jedi-vim'
-    Plugin 'deoplete-plugins/deoplete-jedi'
+"    Plugin 'deoplete-plugins/deoplete-jedi'
     Plugin 'psf/black'
     Plugin 'airblade/vim-gitgutter'
     Plugin 'tpope/vim-fugitive'
@@ -67,7 +67,7 @@ map <leader>b :Buffers <CR>
 map <leader>f :Rg<CR>
 map <leader><leader> :Commands <CR>
 
-"let g:python3_host_prog = $HOME . "/.virtualenvs/nvim/bin/python3"
+let g:python3_host_prog = $HOME . "/.virtualenvs/nvim/bin/python3"
 let g:python_highlight_all = 1
 let g:SuperTabDefaultCompletionType = "<C-X><C-O>"
 
@@ -168,7 +168,7 @@ vnoremap p "+gp
 " Tagbar
 nmap <F8> :TagbarToggle<CR>
 let g:tagbar_width=40
-"autocmd VimEnter *.py nested :call tagbar#autoopen(1)
+autocmd VimEnter *.py nested :call tagbar#autoopen(1)
 let g:tagbar_sort=0
 
 " NERDTree
