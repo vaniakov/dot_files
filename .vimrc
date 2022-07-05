@@ -42,11 +42,12 @@ call vundle#begin()
     Plugin 'sjl/badwolf'
     Plugin 'fatih/molokai'
     Plugin 'morhetz/gruvbox'
+    Plugin 'arzg/vim-colors-xcode'
 
     " syntax highlighting
     Plugin 'tsandall/vim-rego'
     Plugin 'vim-python/python-syntax'
-    Plugin 'sheerun/vim-polyglot'
+"     Plugin 'sheerun/vim-polyglot'
 
 call vundle#end()                           " required
 
@@ -115,13 +116,14 @@ let g:pymode_rope = 0
 " ALE
 let g:ale_enabled = 1
 let g:ale_linters = {
-	\ 'go': ['gopls'],
+	\ 'go': ['gopls', 'vale'],
 	\}
 let g:ale_fixers = {
-\   '*': ['remove_trailing_lines', 'trim_whitespace'],
-\   'python': ['black'],
 \   'go': ['gofmt'],
 \}
+
+" \   'python': ['black'],
+" '*': ['remove_trailing_lines', 'trim_whitespace'],
 let g:ale_fix_on_save = 1
 let g:airline#extensions#ale#enabled = 1
 let g:ale_virtualtext_cursor = 1
@@ -188,7 +190,9 @@ nnoremap <silent> <C-d> :lclose<CR>:bdelete!<CR>
 set termguicolors
 
 "set bg=light
-"let g:gruvbox_contrast_dark='hard'
+let g:gruvbox_contrast_dark='hard'
+"colorscheme xcodelight
+"colorscheme grubbox
 colorscheme molokai
 
 " enable syntax highlighting
@@ -244,7 +248,7 @@ set hlsearch
 "  :20  :  up to 20 lines of command-line history will be remembered
 "  %    :  saves and restores the buffer list
 "  n... :  where to save the viminfo files
-set viminfo='10,\"100,:20,%,n~/.viminfo
+set viminfo='100,\"1000,:200,%,n~/.viminfo
 
 " turn off search highlight
 nnoremap <leader><space> :nohlsearch<CR>
@@ -330,6 +334,6 @@ function! CleanUpWs()
     %s/\s\+$//e
      |norm!``
 endf
-aug CleanUp
-    au BufWritePre * if !&bin | call CleanUpWs() | endi
-aug END
+"aug CleanUp
+"    au BufWritePre *.go if !&bin | call CleanUpWs() | endi
+"aug END

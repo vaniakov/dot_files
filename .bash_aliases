@@ -10,9 +10,8 @@ alias cat="bat -p"
 alias grep="rg"
 alias vim="nvim"
 alias tf="terraform"
-alias dc="docker compose"
+alias dc="docker-compose"
+alias k="kubectl"
 
 alias gows="cd ~/lohika/blameless/workspace"
 alias gocoms="cd ~/lohika/blameless/workspace/blameless/comms-flow"
-
-alias notify="tput bel"

@@ -1,5 +1,6 @@
 . ~/.bash_functions
 . ~/.bash_aliases
+. ~/.env_vars
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -11,7 +12,7 @@ fi
 # If you come from bash you might have to change your $PATH.
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/ikovalkovskyi/.oh-my-zsh"
+export ZSH="~/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -90,68 +91,20 @@ plugins=(
   ripgrep
   fzf
   fd
-#  terraform
-#  kubectl
-#  helm
+  terraform
+  kubectl
+  helm
   gcloud
   tmux
 )
 
 source $ZSH/oh-my-zsh.sh
 
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-export EDITOR='vim'
-export PAGER=='less'
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-
-
-export EDITOR=nvim
-export PAGER=less
-export PATH=$HOME/bin:/usr/local/bin:$PATH
-
-# Go
-export PATH=$PATH:/usr/local/go/bin:${HOME}/go/bin
-export GOPATH=$(go env GOPATH)
-
-# Python
-export WORKON_HOME=~/.virtualenvs
-export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
-export PYTHONBREAKPOINT=ipdb.set_trace
-# Initialize virtualenvwrapper
-source /usr/local/bin/virtualenvwrapper_lazy.sh
-
-FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border --extended'
-
-
-
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/ikovalkovskyi/Library/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/ikovalkovskyi/Library/google-cloud-sdk/path.zsh.inc'; fi
+if [ -f '~/Library/google-cloud-sdk/path.zsh.inc' ]; then . '~/Library/google-cloud-sdk/path.zsh.inc'; fi
 
 # The next line enables shell command completion for gcloud.
-if [ -f '/Users/ikovalkovskyi/Library/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/ikovalkovskyi/Library/google-cloud-sdk/completion.zsh.inc'; fi
+if [ -f '~/Library/google-cloud-sdk/completion.zsh.inc' ]; then . '~/Library/google-cloud-sdk/completion.zsh.inc'; fi
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
@@ -161,6 +114,3 @@ export NVM_DIR="$HOME/.nvm"
   [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && . "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-
-export GITHUB_PRIVATE_KEY=$(cat ~/.ssh/id_rsa)
-export NPM_TOKEN=$(cat ~/.npmrc | cut -d "=" -f2)
