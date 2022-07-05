@@ -1,6 +1,7 @@
 [user]
 	name = Ivan Kovalkovskyi
 	email = ivankovalkovskyi@blameless.com
+
 [alias]
 	co = checkout
 	br = branch
@@ -31,5 +32,9 @@
 
 [url "ssh://git@github.com/"]
 	insteadOf = https://github.com/
+
 [oh-my-zsh]
 	hide-dirty = 1
+
+[diff "sopsdiffer"]
+	textconv = sops -d

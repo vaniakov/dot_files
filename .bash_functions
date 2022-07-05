@@ -129,3 +129,8 @@ function ctail {
 	path_=${1-"/opt/scalr-server/var/log/service/tf-*.log"}
 	tail -f $path_ | sed -e 's/\(.*FATAL.*\)/\o033[1;31m\1\o033[0;39m/' -e 's/\(.*ERROR.*\)/\o033[31m\1\o033[39m/' -e 's/\(.*WARNING.*\)/\o033[33m\1\o033[39m/' -e 's/\(.*INFO.*\)/\o033[32m\1\o033[39m/' -e 's/\(.*DEBUG.*\)/\o033[34m\1\o033[39m/' -e 's/\(.*Traceback.*\)/\o033[1;39m\1\o033[0;39m/'
 }
+
+function paste() {
+  local file=${1:-/dev/stdin}
+  curl --data-binary @${file} https://paste.rs
+}
