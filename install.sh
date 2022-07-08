@@ -1,10 +1,8 @@
 #!/bin/bash
 
-mkdir -p ~/.vim/bundle ~/.tmux/plugins ${XDG_CONFIG_HOME:-$HOME/.config}/alacritty
+mkdir -p ${XDG_CONFIG_HOME:-$HOME/.config}/alacritty
 
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim 2>/dev/null
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm 2>/dev/null
-git clone https://github.com/powerline/powerline ~/.tmux/plugins/powerline 2>/dev/null
 
 if [ ! -d ~/.oh-my-zsh ]; then
     sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
@@ -32,6 +30,7 @@ ln ${opts} $HOME/dot_files/.zshrc .zshrc
 ln ${opts} $HOME/dot_files/.gitconfig .gitconfig
 ln ${opts} $HOME/dot_files/.p10k.zsh .p10k.zsh
 ln ${opts} $HOME/dot_files/.tmux.conf .tmux.conf
+ln ${opts} $HOME/dot_files/.tmux.conf.local .tmux.conf.local
 ln ${opts} $HOME/dot_files/.vimrc .vimrc
 ln ${opts} $HOME/dot_files/alacritty.yml ${XDG_CONFIG_HOME:-$HOME/.config}/alacritty/alacritty.yml
 
