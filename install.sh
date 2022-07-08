@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mkdir -p ~/.vim/bundle ~/.tmux/plugins $XDG_CONFIG_HOME/alacritty
+mkdir -p ~/.vim/bundle ~/.tmux/plugins ${XDG_CONFIG_HOME:-$HOME/.config}/alacritty
 
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim 2>/dev/null
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm 2>/dev/null
@@ -9,6 +9,8 @@ git clone https://github.com/powerline/powerline ~/.tmux/plugins/powerline 2>/de
 if [ ! -d ~/.oh-my-zsh ]; then
     sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+    git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 fi
 
 if [ -f /usr/local/bin/virtualenvwrapper.sh ] && [ ! -d $HOME/.virtualenvs/nvim ]; then
@@ -23,15 +25,15 @@ if [ "${1}" = "-f" ]; then
 fi
 
 cd ~
-ln ${opts} dot_files/.bash_functions .bash_functions
-ln ${opts} dot_files/.bash_aliases .bash_aliases
-ln ${opts} dot_files/.env_vars .env_vars
-ln ${opts} dot_files/.zshrc .zshrc
-ln ${opts} dot_files/.gitconfig .gitconfig
-ln ${opts} dot_files/.p10k.zsh .p10k.zsh
-ln ${opts} dot_files/.tmux.conf .tmux.conf
-ln ${opts} dot_files/.vimrc .vimrc
-ln ${opts} dot_files/alacritty.yml $XDG_CONFIG_HOME/alacritty/alacritty.yml
+ln ${opts} $HOME/dot_files/.bash_functions .bash_functions
+ln ${opts} $HOME/dot_files/.bash_aliases .bash_aliases
+ln ${opts} $HOME/dot_files/.env_vars .env_vars
+ln ${opts} $HOME/dot_files/.zshrc .zshrc
+ln ${opts} $HOME/dot_files/.gitconfig .gitconfig
+ln ${opts} $HOME/dot_files/.p10k.zsh .p10k.zsh
+ln ${opts} $HOME/dot_files/.tmux.conf .tmux.conf
+ln ${opts} $HOME/dot_files/.vimrc .vimrc
+ln ${opts} $HOME/dot_files/alacritty.yml ${XDG_CONFIG_HOME:-$HOME/.config}/alacritty/alacritty.yml
 
 # Download Fonts
 # MacOS:
@@ -44,3 +46,7 @@ ln ${opts} dot_files/alacritty.yml $XDG_CONFIG_HOME/alacritty/alacritty.yml
 #font:
 #  normal:
 #    family: "MesloLGS NF"
+
+
+# Workspace:
+# for repo in $(ls ~/lohika/blameless/workspace/blameless); do cp prepare-commit-msg ~/lohika/blameless/workspace/blameless/$repo/.git/hooks/ ; done
