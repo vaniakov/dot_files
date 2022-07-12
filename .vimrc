@@ -192,8 +192,9 @@ set termguicolors
 "set bg=light
 let g:gruvbox_contrast_dark='hard'
 "colorscheme xcodelight
-"colorscheme grubbox
+"colorscheme gruvbox
 colorscheme molokai
+
 
 " enable syntax highlighting
 syntax enable
@@ -337,3 +338,8 @@ endf
 "aug CleanUp
 "    au BufWritePre *.go if !&bin | call CleanUpWs() | endi
 "aug END
+"
+
+" dim inactive pane
+hi Normal ctermbg=none guibg=none
+hi LineNr ctermbg=none guibg=none
