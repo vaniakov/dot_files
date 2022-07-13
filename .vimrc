@@ -135,9 +135,9 @@ highlight clear ALEError
 let g:ale_set_highlights = 0
 let g:ale_open_list = 0
 let g:ale_go_gometalinter_executable = 'golangcli-lint'
-let g:ale_sign_error = '❗' " 🔴 🚫
-let g:ale_sign_warning= '⚠️'
-let g:ale_sign_info= 'ℹ'
+let g:ale_sign_error = '🔴'
+let g:ale_sign_warning= '🟡'
+let g:ale_sign_info= '💡'
 let g:ale_virtualtext_prefix = ' > '
 let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'
@@ -340,6 +340,6 @@ endf
 "aug END
 "
 
-" dim inactive pane
+" dim inactive pane in tmux
 hi Normal ctermbg=none guibg=none
 hi LineNr ctermbg=none guibg=none
