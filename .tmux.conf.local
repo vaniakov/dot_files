@@ -459,4 +459,4 @@ unbind C-l
 bind -r n next-window
 bind -r p previous-window
 
-
+bind l  last-window
