@@ -23,6 +23,7 @@ call vundle#begin()
     Plugin 'VundleVim/Vundle.vim'               " let Vundle manage Vundle, required
     Plugin 'bling/vim-airline'                  " Lean & mean status/tabline for vim
     Plugin 'scrooloose/nerdtree'                " File system navigation
+    Plugin 'Xuyuanp/nerdtree-git-plugin'
     Plugin 'preservim/tagbar'
     Plugin 'jessedhillon/vim-easycomment'
     Plugin 'ervandew/supertab'
@@ -116,14 +117,14 @@ let g:pymode_rope = 0
 " ALE
 let g:ale_enabled = 1
 let g:ale_linters = {
-	\ 'go': ['gopls', 'vale'],
+	\ 'go': ['gofmt', 'golint', 'gopls', 'govet'],
 	\}
 let g:ale_fixers = {
-\   'go': ['gofmt'],
+    \'go': ['gofmt'],
+    \'python': ['black'],
+    \'*': ['remove_trailing_lines', 'trim_whitespace'],
 \}
 
-" \   'python': ['black'],
-" '*': ['remove_trailing_lines', 'trim_whitespace'],
 let g:ale_fix_on_save = 1
 let g:airline#extensions#ale#enabled = 1
 let g:ale_virtualtext_cursor = 1
@@ -166,26 +167,38 @@ nnoremap p "+gp
 vnoremap p "+gp
 
 " Tagbar
-nmap <F8> :TagbarToggle<CR>
+nnoremap <leader>t :TagbarToggle<CR>
+
 let g:tagbar_width=40
-autocmd VimEnter *.py nested :call tagbar#autoopen(1)
+autocmd VimEnter *.py,*.go nested :call tagbar#autoopen(1)
 let g:tagbar_sort=0
 
 " NERDTree
 let NERDTreeIgnore=['\.pyc$', '\.pyo$', '__pycache__$']     " Ignore files in NERDTree
+let NERDTreeShowHidden=1
 let NERDTreeWinSize=35
 let NERDTreeQuitOnOpen = 1
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
-"autocmd VimEnter * if !argc() | NERDTree | endif  " Load NERDTree only if vim is run without arguments
-"nmap " :NERDTreeToggle<CR>
 let NERDTreeAutoDeleteBuffer = 1
 
-" When writing a buffer (no delay), and on normal mode changes (after 750ms).
-"call neomake#configure#automake('nw', 750)
+" Exit Vim if NERDTree is the only window remaining in the only tab.
+autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+" Close the tab if NERDTree is the only window remaining in it.
+autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
 
-nnoremap <silent> <C-d> :lclose<CR>:bdelete!<CR>
+" Start NERDTree when Vim is started without file arguments.
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | NERDTree | endif
+
+" If another buffer tries to replace NERDTree, put it in the other window, and bring back NERDTree.
+autocmd BufEnter * if bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
+    \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
+
+nmap " :NERDTreeToggle<CR>
+
 
 " General settings
+"
+nnoremap <silent> <C-d> :lclose<CR>:bdelete!<CR>
 
 set termguicolors
 
@@ -194,7 +207,6 @@ let g:gruvbox_contrast_dark='hard'
 "colorscheme xcodelight
 "colorscheme gruvbox
 colorscheme molokai
-
 
 " enable syntax highlighting
 syntax enable
@@ -245,11 +257,11 @@ set hlsearch
 
 " Tell vim to remember certain things when we exit
 "  '10  :  marks will be remembered for up to 10 previously edited files
-"  "100 :  will save up to 100 lines for each register
+"  "1000 :  will save up to 1000 lines for each register
 "  :20  :  up to 20 lines of command-line history will be remembered
 "  %    :  saves and restores the buffer list
 "  n... :  where to save the viminfo files
-set viminfo='100,\"1000,:200,%,n~/.viminfo
+set viminfo='10,\"1000,:20,%,n~/.viminfo
 
 " turn off search highlight
 nnoremap <leader><space> :nohlsearch<CR>
@@ -279,7 +291,7 @@ nmap <leader>w :w!<cr>
 
 " :W sudo saves the file
 " (useful for handling the permission-denied error)
-command W w !sudo tee % > /dev/null
+command! W w !sudo tee % > /dev/null
 
 " Add a bit extra margin to the left
 set foldcolumn=1
@@ -291,13 +303,10 @@ set undodir=$vimhome/undodir
 "=====================================================
 "" Tabs / Buffers settings
 "=====================================================
+" open new buffers as tabs
 tab sball
 set switchbuf=useopen
 set laststatus=2
-nmap <F9> :bprev<CR>
-nmap <F10> :bnext<CR>
-"nmap <silent> <leader>q :SyntasticCheck # <CR> :bp <BAR> bd #<CR>
-
 
 " Smart way to move between windows
 map <C-j> <C-W>j
@@ -308,13 +317,6 @@ map <C-l> <C-W>l
 " Close the current buffer
 map <leader>l :bnext<cr>
 map <leader>h :bprevious<cr>
-
-" Useful mappings for managing tabs
-map <leader>tc :tabnew<cr>
-map <leader>to :tabonly<cr>
-map <leader>tw :tabclose<cr>
-map <leader>tm :tabmove
-map <leader>tn<leader> :tabnext
 
 set laststatus=2
 set backspace=indent,eol,start
@@ -335,11 +337,12 @@ function! CleanUpWs()
     %s/\s\+$//e
      |norm!``
 endf
+
 "aug CleanUp
 "    au BufWritePre *.go if !&bin | call CleanUpWs() | endi
 "aug END
 "
 
-" dim inactive pane in tmux
+" reset the backgrond color: allows to dim inactive pane in tmux
 hi Normal ctermbg=none guibg=none
 hi LineNr ctermbg=none guibg=none
