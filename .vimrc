@@ -215,6 +215,8 @@ syntax enable
 "set shell=/bin/bash\ --rcfile\ ~/.bashrc
 map <leader>c :!sync &<cr>
 
+set hidden
+
 " show line numbers
 set number
 
@@ -304,7 +306,7 @@ set undodir=$vimhome/undodir
 "" Tabs / Buffers settings
 "=====================================================
 " open new buffers as tabs
-tab sball
+"tab sball
 set switchbuf=useopen
 set laststatus=2
 
