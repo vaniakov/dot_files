@@ -100,12 +100,6 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '~/Library/google-cloud-sdk/path.zsh.inc' ]; then . '~/Library/google-cloud-sdk/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '~/Library/google-cloud-sdk/completion.zsh.inc' ]; then . '~/Library/google-cloud-sdk/completion.zsh.inc'; fi
-
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
@@ -115,5 +109,24 @@ export NVM_DIR="$HOME/.nvm"
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
+export GITHUB_PRIVATE_KEY=$(cat ~/.ssh/id_rsa)
+export NPM_TOKEN=$(cat ~/.npmrc | cut -d "=" -f2)
+
+export PROMPT_EOL_MARK=''
+
+
+if command -v ngrok &>/dev/null; then
+    eval "$(ngrok completion zsh)"
+fi
+
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 fpath+=${ZDOTDIR:-~}/.zsh_functions
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+fpath+=${ZDOTDIR:-~}/.zsh_functions
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/ikovalkovskyi/Library/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/ikovalkovskyi/Library/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/ikovalkovskyi/Library/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/ikovalkovskyi/Library/google-cloud-sdk/completion.zsh.inc'; fi
