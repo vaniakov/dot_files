@@ -134,3 +134,8 @@ function paste() {
   local file=${1:-/dev/stdin}
   curl --data-binary @${file} https://paste.rs
 }
+
+# mint only
+fix_audio () {
+  rm -rf ~/.config/pulse && pulseaudio -k
+}

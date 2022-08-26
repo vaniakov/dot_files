@@ -20,6 +20,13 @@ filetype off
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
+    Plugin 'pangloss/vim-javascript'
+    Plugin 'leafgarland/typescript-vim'
+    Plugin 'peitalin/vim-jsx-typescript'
+    Plugin 'styled-components/vim-styled-components', { 'branch': 'main' }
+    Plugin 'jparise/vim-graphql'
+    Plugin 'neoclide/coc.nvim', {'branch': 'release'}
+
     Plugin 'VundleVim/Vundle.vim'               " let Vundle manage Vundle, required
     Plugin 'bling/vim-airline'                  " Lean & mean status/tabline for vim
     Plugin 'scrooloose/nerdtree'                " File system navigation
@@ -38,6 +45,7 @@ call vundle#begin()
     Plugin 'tpope/vim-fugitive'
     Plugin 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
     Plugin 'junegunn/fzf.vim'
+    Plugin 'mhinz/vim-startify'
 
     " themes
     Plugin 'sjl/badwolf'
@@ -60,6 +68,17 @@ filetype plugin indent on
 let mapleader=","
 
 " Extensions setup
+"
+let g:coc_global_extensions = [
+      \ 'coc-tsserver'
+      \ ]
+if isdirectory('./node_modules') && isdirectory('./node_modules/prettier')
+  let g:coc_global_extensions += ['coc-prettier']
+endif
+
+if isdirectory('./node_modules') && isdirectory('./node_modules/eslint')
+  let g:coc_global_extensions += ['coc-eslint']
+endif
 
 " fzf
 map <C-P> :Files <CR>
@@ -170,14 +189,15 @@ vnoremap p "+gp
 nnoremap <leader>t :TagbarToggle<CR>
 
 let g:tagbar_width=40
-autocmd VimEnter *.py,*.go nested :call tagbar#autoopen(1)
+" autoopen tagbar for python and golang
+"autocmd VimEnter *.py,*.go nested :call tagbar#autoopen(1)
 let g:tagbar_sort=0
 
 " NERDTree
 let NERDTreeIgnore=['\.pyc$', '\.pyo$', '__pycache__$']     " Ignore files in NERDTree
 let NERDTreeShowHidden=1
 let NERDTreeWinSize=35
-let NERDTreeQuitOnOpen = 1
+let NERDTreeQuitOnOpen = 0
 let NERDTreeAutoDeleteBuffer = 1
 
 " Exit Vim if NERDTree is the only window remaining in the only tab.
@@ -186,8 +206,8 @@ autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTr
 autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
 
 " Start NERDTree when Vim is started without file arguments.
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | NERDTree | endif
+"autocmd StdinReadPre * let s:std_in=1
+"autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | NERDTree | endif
 
 " If another buffer tries to replace NERDTree, put it in the other window, and bring back NERDTree.
 autocmd BufEnter * if bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
@@ -197,7 +217,7 @@ nmap " :NERDTreeToggle<CR>
 
 
 " General settings
-"
+
 nnoremap <silent> <C-d> :lclose<CR>:bdelete!<CR>
 
 set termguicolors
