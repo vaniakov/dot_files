@@ -1,30 +1,59 @@
 [user]
 	name = Ivan Kovalkovskyi
-	email = ivankovalkovskyi@blameless.com
+	email = ikovalkovskyi@lohika.com
+
+[diff]
+  colorMoved = default
+  colorMovedWS = allow-indentation-change
 
 [alias]
-	co = checkout
-	br = branch
-	ci = commit
-	st = status
 	s = status
-	plog = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+    co = checkout
 	unstage = reset HEAD --
-	last = log -1 HEAD
+
+    # commit history as an ASCII 'tree'
+	tree = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+    # like 'tree', but for all branches
+    graph = tree --branches=*
 	ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%an]" --decorate
 	ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%an]" --decorate --numstat
-	lds = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%an]" --decorate --date=short
-	ld = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=relative
-	le = log --oneline --decorate
+
 	filelog = log -u
-	fl = log -u
-	dl = "!git ll -1"
-	dlc = diff --cached HEAD^
-	dr  = "!f() { git diff "$1"^.."$1"; }; f"
-	lc  = "!f() { git ll "$1"^.."$1"; }; f"
-	diffr  = "!f() { git diff "$1"^.."$1"; }; f"
-	f = "!git ls-files | grep -i"
-	la = "!git config -l | grep alias | cut -c 7-"
+	fl = filelog
+
+
+	show-commit-diff = "!f() { git diff "$1"^.."$1"; }; f"
+	list-commit-changes = "!f() { git ll "$1"^.."$1"; }; f"
+	fd = "!git ls-files | grep -i"
+
+    ap   = add --patch
+    anew = add --intent-to-add
+    aall = add --all
+
+    cm= commit --verbose # Edit commit in editor
+    cma = commit --verbose --amend # Amend HEAD
+    cmm = commit --message # Commit with a short title
+    fixup = commit --fixup # To squash with another commit
+    fixr = "!gitfixr() { git commit --fixup=$1 && git rebase -i --autosquash $1^; }; gitfixr"
+    rbcont = rebase --continue
+    rbabort = rebase --abort
+    pick = cherry-pick -x
+    # push to same branch name in remote/origin
+    pusho = !git push --set-upstream origin $(git branch --show-current)
+    pushf = !git push -f origin $(git branch --show-current)
+
+	list-aliases = "!git config -l | grep alias | cut -c 7- | bat -l ini -p"
+	la = list-aliases
+[blame]
+    coloring = repeatedLines
+[color]
+    ui = auto
+    pager = true
+[grep]
+    lineNumber = true
+[rebase]
+    autosquash = true
+    autoStash = true
 
 [core]
 	autocrlf = false

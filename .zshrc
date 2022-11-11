@@ -1,6 +1,3 @@
-. ~/.bash_functions
-. ~/.bash_aliases
-. ~/.env_vars
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -96,6 +93,8 @@ plugins=(
   helm
   gcloud
   tmux
+  minikube
+  vault
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -103,17 +102,10 @@ source $ZSH/oh-my-zsh.sh
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-export NVM_DIR="$HOME/.nvm"
-  [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-  [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && . "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+#test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 export GITHUB_PRIVATE_KEY=$(cat ~/.ssh/id_rsa)
-export NPM_TOKEN=$(cat ~/.npmrc | cut -d "=" -f2)
-
 export PROMPT_EOL_MARK=''
-
 
 if command -v ngrok &>/dev/null; then
     eval "$(ngrok completion zsh)"
@@ -122,7 +114,7 @@ fi
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 fpath+=${ZDOTDIR:-~}/.zsh_functions
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-fpath+=${ZDOTDIR:-~}/.zsh_functions
-
 [[ -s "/etc/grc.zsh" ]] && source /etc/grc.zsh
+. ~/.bash_functions
+. ~/.bash_aliases
+. ~/.env_vars

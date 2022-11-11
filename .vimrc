@@ -190,7 +190,7 @@ nnoremap <leader>t :TagbarToggle<CR>
 
 let g:tagbar_width=40
 " autoopen tagbar for python and golang
-"autocmd VimEnter *.py,*.go nested :call tagbar#autoopen(1)
+" autocmd VimEnter *.py,*.go nested :call tagbar#autoopen(1)
 let g:tagbar_sort=0
 
 " NERDTree
@@ -225,8 +225,8 @@ set termguicolors
 "set bg=light
 let g:gruvbox_contrast_dark='hard'
 "colorscheme xcodelight
-"colorscheme gruvbox
-colorscheme molokai
+colorscheme gruvbox
+"colorscheme molokai
 
 " enable syntax highlighting
 syntax enable

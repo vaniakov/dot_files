@@ -139,3 +139,19 @@ function paste() {
 fix_audio () {
   rm -rf ~/.config/pulse && pulseaudio -k
 }
+
+function jump_pod() {
+    cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ikova-busybox-jump
+spec:
+  containers:
+  - name: busybox
+    image: radial/busyboxplus:curl
+    args:
+    - sleep
+    - "3600"
+EOF
+}

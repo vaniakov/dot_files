@@ -14,5 +14,5 @@ alias dc="docker-compose"
 alias k="kubectl"
 alias sudo='sudo '
 
-alias gows="cd ~/lohika/blameless/workspace"
-alias gocoms="cd ~/lohika/blameless/workspace/blameless/comms-flow"
+alias goapplier="cd ~/lohika/demonware/kube-applier"
+alias godemon="cd ~/lohika/demonware"
