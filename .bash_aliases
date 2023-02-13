@@ -6,13 +6,16 @@ alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
 
+alias diff="colordiff"
 alias cat="bat -p"
 alias grep="rg"
 alias vim="nvim"
 alias tf="terraform"
 alias dc="docker-compose"
 alias k="kubectl"
+alias gc="gcloud"
 alias sudo='sudo '
+alias rm="rm -i"
 
 alias goapplier="cd ~/lohika/demonware/kube-applier"
 alias godemon="cd ~/lohika/demonware"
