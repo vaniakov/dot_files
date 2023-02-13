@@ -20,12 +20,12 @@ filetype off
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
-    Plugin 'pangloss/vim-javascript'
-    Plugin 'leafgarland/typescript-vim'
-    Plugin 'peitalin/vim-jsx-typescript'
-    Plugin 'styled-components/vim-styled-components', { 'branch': 'main' }
-    Plugin 'jparise/vim-graphql'
-    Plugin 'neoclide/coc.nvim', {'branch': 'release'}
+"    Plugin 'pangloss/vim-javascript'
+"    Plugin 'leafgarland/typescript-vim'
+"    Plugin 'peitalin/vim-jsx-typescript'
+"    Plugin 'styled-components/vim-styled-components', { 'branch': 'main' }
+"    Plugin 'jparise/vim-graphql'
+"   Plugin 'neoclide/coc.nvim', {'branch': 'release'}
 
     Plugin 'VundleVim/Vundle.vim'               " let Vundle manage Vundle, required
     Plugin 'bling/vim-airline'                  " Lean & mean status/tabline for vim
@@ -38,9 +38,9 @@ call vundle#begin()
     Plugin 'w0rp/ale'
     Plugin 'fatih/vim-go'
     Plugin 'Shougo/deoplete.nvim'
-    Plugin 'davidhalter/jedi-vim'
+"    Plugin 'davidhalter/jedi-vim'
 "    Plugin 'deoplete-plugins/deoplete-jedi'
-    Plugin 'psf/black'
+"    Plugin 'psf/black'
     Plugin 'airblade/vim-gitgutter'
     Plugin 'tpope/vim-fugitive'
     Plugin 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -56,7 +56,7 @@ call vundle#begin()
     " syntax highlighting
     Plugin 'tsandall/vim-rego'
     Plugin 'vim-python/python-syntax'
-"     Plugin 'sheerun/vim-polyglot'
+    Plugin 'sheerun/vim-polyglot'
 
 call vundle#end()                           " required
 
@@ -92,8 +92,8 @@ let g:python_highlight_all = 1
 let g:SuperTabDefaultCompletionType = "<C-X><C-O>"
 
 " Easy comment
-vmap <silent> <C-_> :call ToggleCommentVisual()<CR>
-nmap <silent> <C-_> :call ToggleCommentLine()<CR>
+vmap <silent> <C-,> :call ToggleCommentVisual()<CR>
+nmap <silent> <C-,> :call ToggleCommentLine()<CR>
 au FileType python let b:comment_style="inline"
 au FileType python let b:comment_opener="#"
 
@@ -231,6 +231,7 @@ colorscheme gruvbox
 " enable syntax highlighting
 syntax enable
 
+
 " set shell to bash
 "set shell=/bin/bash\ --rcfile\ ~/.bashrc
 map <leader>c :!sync &<cr>
@@ -322,6 +323,12 @@ set foldcolumn=1
 set undofile
 set undodir=$vimhome/undodir
 
+set backup
+set backupdir=$vimhome/backupdir
+set directory=~/.vim/tmp
+
+
+
 "=====================================================
 "" Tabs / Buffers settings
 "=====================================================
@@ -339,6 +346,8 @@ map <C-l> <C-W>l
 " Close the current buffer
 map <leader>l :bnext<cr>
 map <leader>h :bprevious<cr>
+
+nnoremap G :syntax sync fromstart<cr>G
 
 set laststatus=2
 set backspace=indent,eol,start
@@ -368,3 +377,10 @@ endf
 " reset the backgrond color: allows to dim inactive pane in tmux
 hi Normal ctermbg=none guibg=none
 hi LineNr ctermbg=none guibg=none
+
+
+
+augroup rerender_large_files
+  au!
+  au BufEnter *.go set redrawtime=10000 | syntax sync minlines=200 | syntax sync maxlines=500
+augroup END

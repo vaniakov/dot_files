@@ -2,7 +2,7 @@
 . ~/.bash_aliases
 . ~/.env_vars
 
-export PS1="\[\033[32m\]\u@\h\[\033[00m\] \w\[\033[33m\]\$(git_branch)\[\033[00m\] $ "
+export PS1="\[\033[32m\]\u@\h\[\033[00m\] \w\[\033[33m\]\[\033[00m\] $ "
 export PATH=$HOME/bin:$PATH
 export PATH=$PATH:/usr/local/go/bin:${HOME}/go/bin
 
@@ -40,3 +40,5 @@ fi
 if command -v terraform &> /dev/null; then
     complete -C 'terraform' terraform
 fi
+
+source /Users/ikovalkovskyi/.docker/init-bash.sh || true # Added by Docker Desktop

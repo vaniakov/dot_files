@@ -97,12 +97,26 @@ plugins=(
   vault
 )
 
-source $ZSH/oh-my-zsh.sh
+### Fix slowness of pastes with zsh-syntax-highlighting.zsh
+pasteinit() {
+  OLD_SELF_INSERT=${${(s.:.)widgets[self-insert]}[2,3]}
+  zle -N self-insert url-quote-magic # I wonder if you'd need `.url-quote-magic`?
+}
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+pastefinish() {
+  zle -N self-insert $OLD_SELF_INSERT
+}
+zstyle :bracketed-paste-magic paste-init pasteinit
+zstyle :bracketed-paste-magic paste-finish pastefinish
+### Fix slowness of pastes
 
-#test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+if [ -z "$INTELLIJ_ENVIRONMENT_READER" ]; then
+    source $ZSH/oh-my-zsh.sh
+    # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+    [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+    test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+fi
 
 export GITHUB_PRIVATE_KEY=$(cat ~/.ssh/id_rsa)
 export PROMPT_EOL_MARK=''
@@ -114,7 +128,24 @@ fi
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 fpath+=${ZDOTDIR:-~}/.zsh_functions
 
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '~/google-cloud-sdk/path.zsh.inc' ]; then . '~/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '~/google-cloud-sdk/completion.zsh.inc' ]; then . '~/google-cloud-sdk/completion.zsh.inc'; fi
+
 [[ -s "/etc/grc.zsh" ]] && source /etc/grc.zsh
 . ~/.bash_functions
 . ~/.bash_aliases
 . ~/.env_vars
+
+[[ -s "~/.demonware" ]] && source ~/.demonware
+
+if [ -f '~/.jfrog/jfrog_zsh_completion' ];
+then
+    source ~/.jfrog/jfrog_zsh_completion;
+    autoload -Uz compinit
+    compinit
+fi
+
+source /Users/ikovalkovskyi/.docker/init-zsh.sh || true # Added by Docker Desktop

@@ -1,7 +1,3 @@
-[user]
-	name = Ivan Kovalkovskyi
-	email = ikovalkovskyi@lohika.com
-
 [diff]
   colorMoved = default
   colorMovedWS = allow-indentation-change
@@ -32,6 +28,7 @@
 
     cm= commit --verbose # Edit commit in editor
     cma = commit --verbose --amend # Amend HEAD
+    amend = commit --amend --no-edit
     cmm = commit --message # Commit with a short title
     fixup = commit --fixup # To squash with another commit
     fixr = "!gitfixr() { git commit --fixup=$1 && git rebase -i --autosquash $1^; }; gitfixr"

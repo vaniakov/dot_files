@@ -30,14 +30,6 @@ alias jwth="decode_jwt 1"
 # Decode JWT Payload
 alias jwtp="decode_jwt 2"
 
-
-function git_branch() {
-  GIT_BRANCH=$(git symbolic-ref --short HEAD 2> /dev/null)
-  if [[ ! -z $GIT_BRANCH ]]; then
-      echo " ($GIT_BRANCH)"
-  fi
-}
-
 # branch
 function br() {
   GIT_BRANCH=$(git symbolic-ref --short HEAD 2> /dev/null)
@@ -88,31 +80,6 @@ sync(){
 
 # Kubernetes functions: Newfire
 
-function pod_logs {
-    namespace=$1; shift
-    echo "namespace: $namespace"
-    pod_name_regexp=${1-'backend-app'}; shift
-    echo "pod-regex: $pod_name_regexp"
-    pod_name=$(kubectl -n $namespace get pods | grep $pod_name_regexp | grep Running | tail -1 | cut -d " " -f1)
-    kubectl -n $namespace logs -f $pod_name
-}
-
-function monitor_pods {
-    namespace=$1
-    while true; do kubectl -n $namespace get pods && sleep 10 && clear && echo ${namespace^^}; done
-}
-
-function get_pods {
-    namespace=$1
-    regex=$2
-    kubectl -n $namespace get pods | grep $2
-}
-
-function monitor_logs {
-    namespace=$1
-    regex=${2-'backend'}
-    kubetail $regex -n $namespace
-}
 
 function exec_pod {
     namespace=$1; shift
@@ -140,18 +107,22 @@ fix_audio () {
   rm -rf ~/.config/pulse && pulseaudio -k
 }
 
-function jump_pod() {
+function jump_pod () {
     cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
 metadata:
-  name: ikova-busybox-jump
+  name: ikova-jump-pod
 spec:
   containers:
-  - name: busybox
-    image: radial/busyboxplus:curl
+  - name: shell
+    image: ${1:-ubuntu:latest}
     args:
     - sleep
     - "3600"
 EOF
+}
+
+prune_git_branches() {
+    git fetch -p ; git branch -r | awk '{print $1}' | egrep -v -f /dev/fd/0 <(git branch -vv | grep origin) | awk '{print $1}' | xargs git branch -d
 }
