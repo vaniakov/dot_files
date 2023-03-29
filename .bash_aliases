@@ -1,5 +1,5 @@
 alias l="exa"
-alias ll="exa -laH@"
+alias ll="exa -laH@ --git"
 alias gti="git"
 alias gits="git status"
 alias ..="cd .."

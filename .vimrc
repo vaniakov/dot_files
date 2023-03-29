@@ -38,9 +38,9 @@ call vundle#begin()
     Plugin 'w0rp/ale'
     Plugin 'fatih/vim-go'
     Plugin 'Shougo/deoplete.nvim'
-    Plugin 'davidhalter/jedi-vim'
+"    Plugin 'davidhalter/jedi-vim'
 "    Plugin 'deoplete-plugins/deoplete-jedi'
-    Plugin 'psf/black'
+"    Plugin 'psf/black'
     Plugin 'airblade/vim-gitgutter'
     Plugin 'tpope/vim-fugitive'
     Plugin 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -56,7 +56,7 @@ call vundle#begin()
     " syntax highlighting
     Plugin 'tsandall/vim-rego'
     Plugin 'vim-python/python-syntax'
-"     Plugin 'sheerun/vim-polyglot'
+    Plugin 'sheerun/vim-polyglot'
 
 call vundle#end()                           " required
 

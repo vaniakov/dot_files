@@ -40,3 +40,5 @@ fi
 if command -v terraform &> /dev/null; then
     complete -C 'terraform' terraform
 fi
+
+source /Users/ikovalkovskyi/.docker/init-bash.sh || true # Added by Docker Desktop

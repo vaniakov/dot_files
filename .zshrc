@@ -97,6 +97,19 @@ plugins=(
   vault
 )
 
+### Fix slowness of pastes with zsh-syntax-highlighting.zsh
+pasteinit() {
+  OLD_SELF_INSERT=${${(s.:.)widgets[self-insert]}[2,3]}
+  zle -N self-insert url-quote-magic # I wonder if you'd need `.url-quote-magic`?
+}
+
+pastefinish() {
+  zle -N self-insert $OLD_SELF_INSERT
+}
+zstyle :bracketed-paste-magic paste-init pasteinit
+zstyle :bracketed-paste-magic paste-finish pastefinish
+### Fix slowness of pastes
+
 if [ -z "$INTELLIJ_ENVIRONMENT_READER" ]; then
     source $ZSH/oh-my-zsh.sh
     # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
@@ -134,3 +147,5 @@ then
     autoload -Uz compinit
     compinit
 fi
+
+source /Users/ikovalkovskyi/.docker/init-zsh.sh || true # Added by Docker Desktop
